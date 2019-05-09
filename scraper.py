@@ -4,12 +4,22 @@ from urllib.error import URLError
 
 from bs4 import BeautifulSoup
 
-try:
-    html = urlopen('https://en.wikipedia.org/wiki/Philosophy')
-except HTTPError as e:
-    print(e)
-except URLError as e:
-    print('The server could not be found!')
+def getTitle(url):
+    try:
+        html = urlopen(url)
+    except HTTPError as e:
+        return None
+    except URLError as e:
+        return None
+    try:
+        bs = BeautifulSoup(html.read(), 'html.parser')
+        title = bs.body.h1.get_text()
+    except AttributeError as e:
+        return None
+    return title
+
+title = getTitle('https://en.wikipedia.org/wiki/Philosophy')
+if title == None:
+    print('Title could not be found')
 else:
-    bs = BeautifulSoup(html.read(), 'html.parser')
-    print(bs.html.body.h1)
+    print(title)
